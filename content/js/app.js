@@ -2,6 +2,10 @@ const usersContainer = document.querySelector("#wrap-users");
 const deleteModal = document.querySelector("#delete-modal");
 const editModal = document.querySelector("#edit-modal");
 
+const firstname = document.querySelector(".firstname");
+const lastname = document.querySelector(".lastname");
+const password = document.querySelector(".password");
+
 let userID = null;
 
 window.addEventListener("load", () => {
@@ -17,8 +21,6 @@ function getAllUsers() {
       usersContainer.innerHTML = "";
 
       usersData.forEach((user) => {
-        console.log(user);
-
         usersContainer.insertAdjacentHTML(
           "beforeend",
           `
@@ -80,5 +82,23 @@ function closeEditModal() {
   editModal.classList.remove("visible");
 }
 function updateUser() {
-  closeEditModal();
+  let newUsers = {
+    firstname: firstname.value,
+    lastname: lastname.value,
+    password: password.value,
+  };
+  fetch(
+    `https://sabzlearn-630dd-default-rtdb.firebaseio.com/users/${userID}.json`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(newUsers),
+    }
+  ).then((res) => {
+    console.log(res);
+    closeEditModal();
+    getAllUsers();
+  });
 }
